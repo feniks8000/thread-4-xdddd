@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
@@ -22,10 +23,17 @@ import android.widget.Toast;
 
 import java.io.File;
 
+import static com.example.roflanspacer.GameView.maxX;
+import static com.example.roflanspacer.GameView.maxY;
+
 public class MainActivity extends Activity implements View.OnTouchListener {
       public static   TextView textView;
     private static final int PERMISSION_REQUEST_CODE = 123;
     Thread thread;
+    Thread getThread;
+    public static float unitW = 0;
+    public static float unitH = 0;
+    private SurfaceHolder surfaceHolder;
 
     public static boolean isLeftPressed = false;
     public static boolean isRightPressed = false;
@@ -52,7 +60,10 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             requestPermissionWithRationale();
 
 
-    }}
+    }
+        unitW = surfaceHolder.getSurfaceFrame().width()/maxX;
+        unitH = surfaceHolder.getSurfaceFrame().height()/maxY;
+    }
     @Override
     protected void onStop() {
         thread.interrupt();
@@ -91,20 +102,20 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
     private void makeFolder(){
         File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"fandroid");
-
-        if (!file.exists()){
-            Boolean ff = file.mkdir();
-            if (ff){
-                Toast.makeText(MainActivity.this, "Folder created successfully", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                Toast.makeText(MainActivity.this, "Failed to create folder", Toast.LENGTH_SHORT).show();
-            }
-
-        }
-        else {
-            Toast.makeText(MainActivity.this, "Folder already exist", Toast.LENGTH_SHORT).show();
-        }
+//
+       // if (!file.exists()){
+       //     Boolean ff = file.mkdir();
+       //     if (ff){
+       //         Toast.makeText(MainActivity.this, "Folder created successfully", Toast.LENGTH_SHORT).show();
+       //     }
+       //     else {
+       //         Toast.makeText(MainActivity.this, "Failed to create folder", Toast.LENGTH_SHORT).show();
+       //     }
+//
+       // }
+       // else {
+       //     Toast.makeText(MainActivity.this, "Folder already exist", Toast.LENGTH_SHORT).show();
+       // }
     }
 
     @SuppressLint("WrongConstant")
@@ -156,7 +167,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             // we will give warning to user that they haven't granted permissions.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                    Toast.makeText(this, "Storage Permissions denied.", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(this, "Storage Permissions denied.", Toast.LENGTH_SHORT).show();
 
                 } else {
                     showNoStoragePermissionSnackbar();

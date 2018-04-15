@@ -13,7 +13,8 @@ import android.view.SurfaceView;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Random;
-
+import static com.example.roflanspacer.MainActivity.unitW;
+import static com.example.roflanspacer.MainActivity.unitH;
 import static com.example.roflanspacer.MainActivity.textView;
 
 /**
@@ -26,8 +27,6 @@ public class GameView extends SurfaceView implements Runnable {
 
     public static int maxX = 20;
     public static int maxY = 28;
-    public static float unitW = 0;
-    public static float unitH = 0;
     private boolean firstTime = true;
     private boolean gameRunning = true;
     private Ship ship;
@@ -60,6 +59,7 @@ public class GameView extends SurfaceView implements Runnable {
         handler = new Handler(context.getMainLooper());
             this.context=context;
 
+
     }
     private void Start(){
         runOnUiThread(new Runnable() {
@@ -85,6 +85,7 @@ public class GameView extends SurfaceView implements Runnable {
                     e.printStackTrace();
                 }
                 checkCollision();
+
                 try {
                     checkIfNewAsteroid();
                 } catch (FileNotFoundException e) {
@@ -118,15 +119,12 @@ public class GameView extends SurfaceView implements Runnable {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                if (life==0){
-                    Bitmap b1=BitmapFactory.decodeResource(getResources(), R.drawable.ship2);
-                    ship.bitmap=Bitmap.createScaledBitmap(
-                            b1, (int)(3 * GameView.unitW), (int)(3 * GameView.unitH), false);
-                    ship.drow(paint,canvas);
 
                 }
             }
-        }
+
+
+
 
 
 
@@ -194,8 +192,7 @@ public class GameView extends SurfaceView implements Runnable {
 
             if(firstTime){
                 firstTime = false;
-                unitW = surfaceHolder.getSurfaceFrame().width()/maxX;
-                unitH = surfaceHolder.getSurfaceFrame().height()/maxY;
+
 
                 ship = new Ship(getContext());
             }
@@ -239,7 +236,38 @@ public class GameView extends SurfaceView implements Runnable {
     private void checkCollision() {
         for (final Asteroid asteroid : asteroids) {
             if (asteroid.isCollision(ship.x, ship.y, ship.size)) {
-                life=life-20+random.nextInt(20);{
+                life=life-20+random.nextInt(20);
+                if (life ==0){
+                    if (count >15){
+                        life=50;
+                        count=count-15;
+                    }
+                    if (count<15){
+                        gameRunning=false;
+                        Bitmap b1=BitmapFactory.decodeResource(getResources(), R.drawable.ship2);
+                        ship.bitmap=Bitmap.createScaledBitmap(
+                                b1, (int)(3 * unitW), (int)(3 * unitH), false);
+                        ship.drow(paint,canvas);
+
+                    }
+                }
+                if (life <0){
+                    life=0;
+                    if (count >15){
+                        life=50;
+                        count=count-15;
+                    }
+                    if (count<15){
+                        gameRunning=false;
+                        Bitmap b1=BitmapFactory.decodeResource(getResources(), R.drawable.ship2);
+                        ship.bitmap=Bitmap.createScaledBitmap(
+                                b1, (int)(3 * unitW), (int)(3 * unitH), false);
+                        ship.drow(paint,canvas);
+
+
+                    }
+
+                }{
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -248,18 +276,10 @@ public class GameView extends SurfaceView implements Runnable {
                         }
                     });
                 }
-                if(life==0 || life<0){
-                    if (count>15){
-                    life=50;
-                        count-=15;}
-                        if (count<15){
-                        life=0;
-                    gameRunning=false;
-                    }}}
 
 
             }
-        }
+        }}
 
     private void checkIfNewAsteroid() throws FileNotFoundException {
         if(currentTime >= ASTEROID_INTERVAL){
